@@ -190,7 +190,7 @@ The following custom paintings are currently included.
 
 ## Creating a Release
 
-At some point, you may want to make a release to test your models. You can do so by opening CMD or Terminal and using the following command in the project's root directory:
+At some point, you may want to make a release to test your paintings. You can do so by opening CMD or Terminal and using the following command in the project's root directory:
 
 ```sh
 make
@@ -200,7 +200,7 @@ This creates:
 
 ```text
 releases/<timestamp>.zip
-releases/final/release.zip
+releases/final/wyrd_paintings.zip
 releases/final/README.md
 ```
 
@@ -210,6 +210,52 @@ The release zip contains the active season datapack with `pack.mcmeta` and `data
 
 > [!IMPORTANT]
 > Please do not include generated release zips in ordinary feature commits unless the release workflow specifically requires it.
+
+## Automatic Release Upload
+
+When changes are pushed to `main`, GitHub Actions builds the datapack and uploads:
+
+```text
+releases/final/wyrd_paintings.zip
+```
+
+The upload workflow expects these repository secrets:
+
+```text
+SFTP_HOST
+SFTP_USERNAME
+SFTP_PASSWORD
+SFTP_REMOTE_DIR
+```
+
+`SFTP_REMOTE_DIR` should be the server directory where `wyrd_paintings.zip` needs to be placed.
+
+Optional SFTP secret:
+
+```text
+SFTP_PORT
+```
+
+If `SFTP_PORT` is not set, the workflow uses port `22`.
+
+If RCON is configured, the workflow will notify active players, wait 5 minutes, and then run the restart command.
+
+Optional RCON secrets:
+
+```text
+MC_RCON_HOST
+MC_RCON_PORT
+MC_RCON_PASSWORD
+MC_RESTART_COMMAND
+```
+
+If `MC_RESTART_COMMAND` is not set, the workflow uses `stop`. This assumes the server host or panel will automatically start the server again. If RCON is not configured or fails, the workflow sends a Discord notification instead.
+
+Discord fallback secret:
+
+```text
+DISCORD_WEBHOOK_URL
+```
 
 ## Quick Checklist
 

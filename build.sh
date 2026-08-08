@@ -7,7 +7,8 @@ SEASON_DIR="./$SEASON"
 RELEASES_DIR="./releases"
 SOFT_RELEASE_ZIP="$RELEASES_DIR/$TIMESTAMP.zip"
 FINAL_RELEASE_DIR="./releases/final"
-FINAL_RELEASE_ZIP="$FINAL_RELEASE_DIR/release.zip"
+FINAL_RELEASE_ZIP="$FINAL_RELEASE_DIR/wyrd_paintings.zip"
+LEGACY_FINAL_RELEASE_ZIP="$FINAL_RELEASE_DIR/release.zip"
 
 if [ -z "$SEASON" ]; then
     echo "season.txt is empty."
@@ -40,6 +41,7 @@ rm -f "$SOFT_RELEASE_ZIP"
 
 echo "Creating final release..."
 rm -f "$FINAL_RELEASE_ZIP"
+rm -f "$LEGACY_FINAL_RELEASE_ZIP"
 cp "$SOFT_RELEASE_ZIP" "$FINAL_RELEASE_ZIP"
 
 if [ -f "./README.md" ]; then
