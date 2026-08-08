@@ -57,6 +57,14 @@ releases/final/
 
 Before adding a painting, make sure Wyrdcraft has permission to use the image.
 
+You can generate the datapack files interactively by running:
+
+```sh
+make painting
+```
+
+The script asks for the source image path, asset ID, width, height, title, and author. It creates the painting variant and recipe JSON files in the active season selected by `season.txt`, adds the next available `/trigger painting` value, and updates the Current Paintings section.
+
 ### 1. Choose an ID
 
 Use a lowercase, underscore-safe ID. Keep it specific enough to avoid collisions.
@@ -139,7 +147,7 @@ Example:
 execute as @a[scores={painting=1}] at @s run give @s minecraft:painting[ minecraft:painting/variant="wyrd_painting:dadmannwalking01" ]
 ```
 
-If multiple paintings are added, coordinate trigger values before changing this file so one value does not accidentally give several paintings.
+The `make painting` script updates this file automatically using the next available trigger value. If you edit this file manually, make sure one trigger value does not accidentally give several paintings.
 
 ### 5. Add the Resource Pack Assets
 
@@ -151,10 +159,11 @@ The following custom paintings are currently included.
 
 ```markdown
 - `dadmannwalking01`: A Fresh Start, 4x3, by dadmannwalking
+- `dadmannwalking02`: The Three Amigos, 1x1, by dadmannwalking
 ```
 
 > [!IMPORTANT]
-> Please update this list as you add new paintings!
+> The `make painting` script updates this list automatically. If you add paintings manually, please update this list yourself.
 
 ## Creating a Release
 
