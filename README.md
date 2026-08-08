@@ -19,15 +19,7 @@ season_one/data/wyrd_painting/recipe/painting_variant/
 season_one/data/wyrd_painting/function/
 ```
 
-The resource pack is responsible for assets such as:
-
-```text
-custom-models/season_one/assets/wyrd_painting/textures/painting/
-custom-models/season_one/assets/wyrd_painting/textures/item/
-custom-models/season_one/assets/wyrd_painting/models/item/
-custom-models/season_one/assets/wyrd_painting/lang/en_us.json
-custom-models/season_one/assets/minecraft/items/painting.json
-```
+The resource pack is responsible for textures, item icons, item models, and language entries. For asset instructions, see the [custom painting asset guide](https://github.com/WyrdcraftOnline/custom-models/blob/main/custom_paintings.md) in the custom models resource pack.
 
 ## Repository Layout
 
@@ -151,31 +143,7 @@ If multiple paintings are added, coordinate trigger values before changing this 
 
 ### 5. Add the Resource Pack Assets
 
-In the [custom models resource pack](https://github.com/WyrdcraftOnline/custom-models), add the matching painting art, item icon, model, and language entry.
-
-At minimum, check these files and folders:
-
-```text
-custom-models/season_one/assets/wyrd_painting/textures/painting/
-custom-models/season_one/assets/wyrd_painting/textures/item/
-custom-models/season_one/assets/wyrd_painting/models/item/
-custom-models/season_one/assets/wyrd_painting/lang/en_us.json
-custom-models/season_one/assets/minecraft/items/painting.json
-```
-
-The resource pack `painting.json` must map the painting variant to the correct item model.
-
-Example:
-
-```json
-{
-  "when": "wyrd_painting:dadmannwalking01",
-  "model": {
-    "type": "model",
-    "model": "wyrd_painting:item/dadmannwalking"
-  }
-}
-```
+In the [custom models resource pack](https://github.com/WyrdcraftOnline/custom-models), add the matching painting art, item icon, model, and language entry. See that repository's [custom painting asset guide](https://github.com/WyrdcraftOnline/custom-models/blob/main/custom_paintings.md) for details.
 
 ## Current Paintings
 
