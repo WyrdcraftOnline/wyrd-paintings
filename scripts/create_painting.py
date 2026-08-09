@@ -42,15 +42,6 @@ def validate_int(value):
     return None
 
 
-def validate_image(value):
-    path = Path(value).expanduser()
-    if not path.exists():
-        return "Image file does not exist."
-    if not path.is_file():
-        return "Image path must point to a file."
-    return None
-
-
 def confirm_overwrite(paths):
     existing = [path for path in paths if path.exists()]
     if not existing:
@@ -60,7 +51,10 @@ def confirm_overwrite(paths):
     for path in existing:
         print(f"- {path}")
 
-    answer = input("Overwrite them? [y/N]: ").strip().lower()
+    try:
+        answer = input("Overwrite them? [y/N]: ").strip().lower()
+    except EOFError:
+        return False
     return answer in {"y", "yes"}
 
 
@@ -158,8 +152,8 @@ def main():
         return 1
 
     print("Create a Wyrdcraft custom painting datapack entry\n")
-    image_path = prompt("Image path", validate_image)
     asset_id = prompt("Asset ID", validate_asset_id)
+    print("This ID must exactly match the custom models resource-pack painting asset ID.")
     width = int(prompt("Width in blocks", validate_int))
     height = int(prompt("Height in blocks", validate_int))
     title = prompt("Title")
@@ -220,8 +214,8 @@ def main():
         print(f"- {readme_path.relative_to(repo_root)} was not updated")
 
     print("\nResource-pack follow-up:")
-    print(f"- Add the painting image to the custom models repo for {namespaced_id}.")
-    print(f"- Source image: {Path(image_path).expanduser()}")
+    print(f"- Run `make painting` in the custom models repo using asset ID `{asset_id}`.")
+    print(f"- The resource-pack painting asset must map to {namespaced_id}.")
     print("- See https://github.com/WyrdcraftOnline/custom-models/blob/main/custom_paintings.md")
 
     return 0

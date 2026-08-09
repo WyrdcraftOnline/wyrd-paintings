@@ -63,7 +63,9 @@ You can generate the datapack files interactively by running:
 make painting
 ```
 
-The script asks for the source image path, asset ID, width, height, title, and author. It creates the painting variant and recipe JSON files in the active season selected by `season.txt`, adds the next available `/trigger painting` value, and updates the Current Paintings section.
+The script asks for the asset ID, width, height, title, and author. It creates the painting variant and recipe JSON files in the active season selected by `season.txt`, adds the next available `/trigger painting` value, and updates the Current Paintings section.
+
+The asset ID must exactly match the painting asset ID used in the custom models resource pack.
 
 ### 1. Choose an ID
 
@@ -151,7 +153,7 @@ The `make painting` script updates this file automatically using the next availa
 
 ### 5. Add the Resource Pack Assets
 
-In the [custom models resource pack](https://github.com/WyrdcraftOnline/custom-models), add the matching painting art, item icon, model, and language entry. See that repository's [custom painting asset guide](https://github.com/WyrdcraftOnline/custom-models/blob/main/custom_paintings.md) for details.
+In the [custom models resource pack](https://github.com/WyrdcraftOnline/custom-models), run `make painting` with the same asset ID to add the matching painting art, item icon mapping, and model entry. See that repository's [custom painting asset guide](https://github.com/WyrdcraftOnline/custom-models/blob/main/custom_paintings.md) for details.
 
 ## Current Paintings
 
