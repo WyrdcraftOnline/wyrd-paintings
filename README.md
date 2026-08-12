@@ -19,15 +19,7 @@ season_one/data/wyrd_painting/recipe/painting_variant/
 season_one/data/wyrd_painting/function/
 ```
 
-The resource pack is responsible for assets such as:
-
-```text
-custom-models/season_one/assets/wyrd_painting/textures/painting/
-custom-models/season_one/assets/wyrd_painting/textures/item/
-custom-models/season_one/assets/wyrd_painting/models/item/
-custom-models/season_one/assets/wyrd_painting/lang/en_us.json
-custom-models/season_one/assets/minecraft/items/painting.json
-```
+The resource pack is responsible for textures, item icons, item models, and language entries. For asset instructions, see the [custom painting asset guide](https://github.com/WyrdcraftOnline/custom-models/blob/main/custom_paintings.md) in the custom models resource pack.
 
 ## Repository Layout
 
@@ -64,6 +56,16 @@ releases/final/
 ## Adding a Custom Painting
 
 Before adding a painting, make sure Wyrdcraft has permission to use the image.
+
+You can generate the datapack files interactively by running:
+
+```sh
+make painting
+```
+
+The script asks for the asset ID, width, height, title, and author. It creates the painting variant and recipe JSON files in the active season selected by `season.txt`, adds the next available `/trigger painting` value, and updates the Current Paintings section.
+
+The asset ID must exactly match the painting asset ID used in the custom models resource pack.
 
 ### 1. Choose an ID
 
@@ -147,35 +149,11 @@ Example:
 execute as @a[scores={painting=1}] at @s run give @s minecraft:painting[ minecraft:painting/variant="wyrd_painting:dadmannwalking01" ]
 ```
 
-If multiple paintings are added, coordinate trigger values before changing this file so one value does not accidentally give several paintings.
+The `make painting` script updates this file automatically using the next available trigger value. If you edit this file manually, make sure one trigger value does not accidentally give several paintings.
 
 ### 5. Add the Resource Pack Assets
 
-In the [custom models resource pack](https://github.com/WyrdcraftOnline/custom-models), add the matching painting art, item icon, model, and language entry.
-
-At minimum, check these files and folders:
-
-```text
-custom-models/season_one/assets/wyrd_painting/textures/painting/
-custom-models/season_one/assets/wyrd_painting/textures/item/
-custom-models/season_one/assets/wyrd_painting/models/item/
-custom-models/season_one/assets/wyrd_painting/lang/en_us.json
-custom-models/season_one/assets/minecraft/items/painting.json
-```
-
-The resource pack `painting.json` must map the painting variant to the correct item model.
-
-Example:
-
-```json
-{
-  "when": "wyrd_painting:dadmannwalking01",
-  "model": {
-    "type": "model",
-    "model": "wyrd_painting:item/dadmannwalking"
-  }
-}
-```
+In the [custom models resource pack](https://github.com/WyrdcraftOnline/custom-models), run `make painting` with the same asset ID to add the matching painting art, item icon mapping, and model entry. See that repository's [custom painting asset guide](https://github.com/WyrdcraftOnline/custom-models/blob/main/custom_paintings.md) for details.
 
 ## Current Paintings
 
@@ -183,14 +161,15 @@ The following custom paintings are currently included.
 
 ```markdown
 - `dadmannwalking01`: A Fresh Start, 4x3, by dadmannwalking
+- `dadmannwalking02`: The Three Amigos, 1x1, by dadmannwalking
 ```
 
 > [!IMPORTANT]
-> Please update this list as you add new paintings!
+> The `make painting` script updates this list automatically. If you add paintings manually, please update this list yourself.
 
 ## Creating a Release
 
-At some point, you may want to make a release to test your models. You can do so by opening CMD or Terminal and using the following command in the project's root directory:
+At some point, you may want to make a release to test your paintings. You can do so by opening CMD or Terminal and using the following command in the project's root directory:
 
 ```sh
 make
@@ -200,7 +179,7 @@ This creates:
 
 ```text
 releases/<timestamp>.zip
-releases/final/release.zip
+releases/final/wyrd_paintings.zip
 releases/final/README.md
 ```
 
@@ -210,6 +189,52 @@ The release zip contains the active season datapack with `pack.mcmeta` and `data
 
 > [!IMPORTANT]
 > Please do not include generated release zips in ordinary feature commits unless the release workflow specifically requires it.
+
+## Automatic Release Upload
+
+When changes are pushed to `main`, GitHub Actions builds the datapack and uploads:
+
+```text
+releases/final/wyrd_paintings.zip
+```
+
+The upload workflow expects these repository secrets:
+
+```text
+SFTP_HOST
+SFTP_USERNAME
+SFTP_PASSWORD
+SFTP_REMOTE_DIR
+```
+
+`SFTP_REMOTE_DIR` should be the server directory where `wyrd_paintings.zip` needs to be placed.
+
+Optional SFTP secret:
+
+```text
+SFTP_PORT
+```
+
+If `SFTP_PORT` is not set, the workflow uses port `22`.
+
+If RCON is configured, the workflow will notify active players, wait 5 minutes, and then run the restart command.
+
+Optional RCON secrets:
+
+```text
+MC_RCON_HOST
+MC_RCON_PORT
+MC_RCON_PASSWORD
+MC_RESTART_COMMAND
+```
+
+If `MC_RESTART_COMMAND` is not set, the workflow uses `stop`. This assumes the server host or panel will automatically start the server again. If RCON is not configured or fails, the workflow sends a Discord notification instead.
+
+Discord fallback secret:
+
+```text
+DISCORD_WEBHOOK_URL
+```
 
 ## Quick Checklist
 

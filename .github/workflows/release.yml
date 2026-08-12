@@ -1,0 +1,129 @@
+name: Build and Upload Datapack
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-upload:
+    runs-on: ubuntu-latest
+    env:
+      RELEASE_ZIP: releases/final/wyrd_paintings.zip
+      SFTP_HOST: ${{ secrets.SFTP_HOST }}
+      SFTP_PORT: ${{ secrets.SFTP_PORT }}
+      SFTP_USERNAME: ${{ secrets.SFTP_USERNAME }}
+      SFTP_PASSWORD: ${{ secrets.SFTP_PASSWORD }}
+      SFTP_REMOTE_DIR: ${{ secrets.SFTP_REMOTE_DIR }}
+      MC_RCON_HOST: ${{ secrets.MC_RCON_HOST }}
+      MC_RCON_PORT: ${{ secrets.MC_RCON_PORT }}
+      MC_RCON_PASSWORD: ${{ secrets.MC_RCON_PASSWORD }}
+      MC_RESTART_COMMAND: ${{ secrets.MC_RESTART_COMMAND }}
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build datapack release
+        run: make build
+
+      - name: Install SFTP client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lftp
+
+      - name: Upload datapack over SFTP
+        run: |
+          set -euo pipefail
+
+          : "${SFTP_HOST:?SFTP_HOST is required}"
+          : "${SFTP_USERNAME:?SFTP_USERNAME is required}"
+          : "${SFTP_PASSWORD:?SFTP_PASSWORD is required}"
+          : "${SFTP_REMOTE_DIR:?SFTP_REMOTE_DIR is required}"
+
+          SFTP_PORT="${SFTP_PORT:-22}"
+
+          lftp -u "$SFTP_USERNAME","$SFTP_PASSWORD" -p "$SFTP_PORT" "sftp://$SFTP_HOST" <<EOF
+          set sftp:auto-confirm yes
+          put "$RELEASE_ZIP" -o "$SFTP_REMOTE_DIR/wyrd_paintings.zip"
+          bye
+          EOF
+
+      - name: Announce and restart server with RCON
+        id: rcon
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+
+          if [ -z "$MC_RCON_HOST" ] || [ -z "$MC_RCON_PASSWORD" ]; then
+            echo "skipped=true" >> "$GITHUB_OUTPUT"
+            echo "RCON secrets are not configured; skipping in-game announce and restart."
+            exit 0
+          fi
+
+          MC_RCON_PORT="${MC_RCON_PORT:-25575}"
+
+          python3 <<'PY'
+          import os
+          import socket
+          import struct
+          import time
+
+          host = os.environ["MC_RCON_HOST"]
+          port = int(os.environ.get("MC_RCON_PORT") or "25575")
+          password = os.environ["MC_RCON_PASSWORD"]
+          restart_command = os.environ.get("MC_RESTART_COMMAND") or "stop"
+
+          request_id = 1
+
+          def packet(packet_type, payload):
+              body = struct.pack("<ii", request_id, packet_type) + payload.encode("utf-8") + b"\x00\x00"
+              return struct.pack("<i", len(body)) + body
+
+          def read_packet(sock):
+              size_data = sock.recv(4)
+              if len(size_data) != 4:
+                  raise RuntimeError("No RCON response received")
+              size = struct.unpack("<i", size_data)[0]
+              data = b""
+              while len(data) < size:
+                  chunk = sock.recv(size - len(data))
+                  if not chunk:
+                      raise RuntimeError("Incomplete RCON response received")
+                  data += chunk
+              response_id, response_type = struct.unpack("<ii", data[:8])
+              payload = data[8:-2].decode("utf-8", errors="replace")
+              return response_id, response_type, payload
+
+          def send_command(sock, command):
+              sock.sendall(packet(2, command))
+              return read_packet(sock)
+
+          with socket.create_connection((host, port), timeout=15) as sock:
+              sock.sendall(packet(3, password))
+              response_id, _, _ = read_packet(sock)
+              if response_id == -1:
+                  raise RuntimeError("RCON authentication failed")
+
+              send_command(sock, 'say Wyrdcraft custom paintings have been updated. Server restart in 5 minutes.')
+              time.sleep(240)
+              send_command(sock, 'say Wyrdcraft custom paintings update restart in 1 minute.')
+              time.sleep(60)
+              send_command(sock, restart_command)
+          PY
+
+          echo "skipped=false" >> "$GITHUB_OUTPUT"
+
+      - name: Notify Discord restart required
+        if: steps.rcon.outcome != 'success' || steps.rcon.outputs.skipped == 'true'
+        run: |
+          set -euo pipefail
+
+          if [ -z "$DISCORD_WEBHOOK_URL" ]; then
+            echo "DISCORD_WEBHOOK_URL is not configured; cannot send fallback notification."
+            exit 0
+          fi
+
+          curl -H "Content-Type: application/json" \
+               -X POST \
+               -d "{\"content\":\"The Wyrdcraft custom paintings datapack has been uploaded to the server. A server restart is required before the update is active.\"}" \
+               "$DISCORD_WEBHOOK_URL"
