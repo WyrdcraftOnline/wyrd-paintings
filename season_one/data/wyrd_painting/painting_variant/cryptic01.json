@@ -1,0 +1,13 @@
+{
+  "asset_id": "wyrd_painting:cryptic01",
+  "width": 4,
+  "height": 2,
+  "title": {
+    "text": "A Fresh Start",
+    "color": "yellow"
+  },
+  "author": {
+    "text": "dadmannwalking",
+    "color": "gray"
+  }
+}
