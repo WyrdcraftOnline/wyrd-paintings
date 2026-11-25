@@ -161,21 +161,21 @@ The following custom paintings are currently included.
 
 ```markdown
 - `dadmannwalking01`: A Fresh Start, 4x3, by dadmannwalking
-- `cryptic01`: _, _, by iiTzCrypTiiC
-- `cryptic02`: _, _, by iiTzCrypTiiC
-- `cryptic03`: _, _, by iiTzCrypTiiC
-- `cryptic04`: _, _, by iiTzCrypTiiC
-- `cryptic05`: _, _, by iiTzCrypTiiC
-- `cryptic06`: _, _, by iiTzCrypTiiC
-- `cryptic07`: _, _, by iiTzCrypTiiC
-- `cryptic08`: _, _, by iiTzCrypTiiC
-- `cryptic09`: _, _, by iiTzCrypTiiC
-- `cryptic10`: _, _, by iiTzCrypTiiC
-- `cryptic11`: _, _, by iiTzCrypTiiC
-- `cryptic12`: _, _, by iiTzCrypTiiC
-- `cryptic13`: _, _, by iiTzCrypTiiC
-- `cryptic14`: _, _, by iiTzCrypTiiC
-- `cryptic15`: _, _, by iiTzCrypTiiC
+- `cryptic01`: Tower, 3x4, by iiTzCrypTiiC
+- `cryptic02`: Honey, 4x2, by iiTzCrypTiiC
+- `cryptic03`: Lonely, 4x2, by iiTzCrypTiiC
+- `cryptic04`: SCAM, 2x1, by iiTzCrypTiiC
+- `cryptic05`: Mansion, 4x2, by iiTzCrypTiiC
+- `cryptic06`: Home, 4x2, by iiTzCrypTiiC
+- `cryptic07`: Humdingers, 1x2, by iiTzCrypTiiC
+- `cryptic08`: Dusty Grimoires, 1x1, by iiTzCrypTiiC
+- `cryptic09`: Copper Age, 2x1, by iiTzCrypTiiC
+- `cryptic10`: Last Ruins, 4x2, by iiTzCrypTiiC
+- `cryptic11`: Chalet Getaway, 2x1, by iiTzCrypTiiC
+- `cryptic12`: Haunted, 2x1, by iiTzCrypTiiC
+- `cryptic13`: Lone Warrior, 4x3, by iiTzCrypTiiC
+- `cryptic14`: Of Lore and Love, 2x1, by iiTzCrypTiiC
+- `cryptic15`: Tick + Tock, 1x2, by iiTzCrypTiiC
 ```
 
 > [!IMPORTANT]

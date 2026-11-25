@@ -1,13 +1,13 @@
 {
   "asset_id": "wyrd_painting:cryptic01",
-  "width": 4,
-  "height": 2,
+  "width": 3,
+  "height": 4,
   "title": {
-    "text": "A Fresh Start",
+    "text": "Tower",
     "color": "yellow"
   },
   "author": {
-    "text": "dadmannwalking",
+    "text": "iiTzCrypTiiC",
     "color": "gray"
   }
 }
